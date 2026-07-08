@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản đồ chi tiết Thôn - Buôn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 850px;
+            margin: 0 auto 20px;
+        }
+        .area-box {
+            padding: 15px 8px;
+            text-align: center;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .area-box:hover {
+            transform: scale(1.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border-color: #2563eb;
+        }
+        .info-panel {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .info-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row {
+            display: flex;
+            padding: 6px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .info-label {
+            width: 140px;
+            font-weight: 500;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-center text-xl font-bold text-green-700 mb-6">BẢN ĐỒ CHI TIẾT THÔN, BUÔN</h1>
+
+    <!-- Lưới bản đồ các thôn/buôn -->
+    <div class="map-grid">
+        <div class="area-box bg-sky-100" onclick="showInfo('taybac')">Thôn Tây Bắc</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('buonpan')">Buôn Pan</div>
+        <div class="area-box bg-rose-100" onclick="showInfo('tanlap')">Thôn Tân Lập</div>
+        <div class="area-box bg-purple-100" onclick="showInfo('tanthanh')">Thôn Tân Thành</div>
+        <div class="area-box bg-orange-100" onclick="showInfo('buonjung')">Buôn Jung</div>
+
+        <div class="area-box bg-orange-100" onclick="showInfo('eavong')">Buôn Ea Vông</div>
+        <div class="area-box bg-green-100" onclick="showInfo('phuochoa')">Thôn Phước Hoà</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('ghamah')">Buôn Gha Mah</div>
+        <div class="area-box bg-gray-100" onclick="showInfo('phuocan1')">Phước An 1</div>
+        <div class="area-box bg-purple-100" onclick="showInfo('phuocan2')">Phước An 2</div>
+
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan3')">Phước An 3</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan4')">Phước An 4</div>
+        <div class="area-box bg-purple-100" onclick="showInfo('phuocan5')">Phước An 5</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan6')">Phước An 6</div>
+        <div class="area-box bg-orange-100" onclick="showInfo('thangtien')">Thôn Thắng Tiến</div>
+
+        <div class="area-box bg-green-100" onclick="showInfo('thangtien1')">Thôn Thắng Tiến 1</div>
+        <div class="area-box bg-green-100" onclick="showInfo('kmrong')">Buôn Km Rồng</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('hoatien1')">Thôn Hoà Tiến 1</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('hoatien2')">Thôn Hoà Tiến 2</div>
+        <div class="area-box bg-green-100" onclick="showInfo('hoaan')">Thôn Hoà An</div>
+
+        <div class="area-box bg-rose-100" onclick="showInfo('hoatien3')">Thôn Hoà Tiến 3</div>
+        <div class="area-box bg-gray-100" onclick="showInfo('thanhthanh')">Thành Thạnh</div>
+    </div>
+
+    <!-- Khu vực hiển thị thông tin chi tiết -->
+    <div class="info-panel">
+        <div class="info-header">Thông tin chi tiết</div>
+        <div id="info-content" class="text-gray-600">👉 Nhấn vào tên Thôn/Buôn ở trên để xem thông tin</div>
+    </div>
+
+    <script>
+        // Dữ liệu thông tin chi tiết cho từng khu vực
+        const data = {
+            taybac: {
+                ten: "Thôn Tây Bắc",
+                soHo: "465 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "22,5 ha",
+                danSo: "khoảng 1.850 người",
+                truongThon: "Nguyễn Văn A",
+                ngayCapNhat: "08/07/2026"
+            },
+            buonpan: {
+                ten: "Buôn Pan",
+                soHo: "364 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "18,2 ha",
+                danSo: "khoảng 1.420 người",
+                truongThon: "Y Jăm",
+                ngayCapNhat: "08/07/2026"
+            },
+            tanlap: {
+                ten: "Thôn Tân Lập",
+                soHo: "607 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "28,7 ha",
+                danSo: "khoảng 2.450 người",
+                truongThon: "Trần Thị B",
+                ngayCapNhat: "08/07/2026"
+            },
+            tanthanh: {
+                ten: "Thôn Tân Thành",
+                soHo: "598 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "27,9 ha",
+                danSo: "khoảng 2.380 người",
+                truongThon: "Lê Văn C",
+                ngayCapNhat: "08/07/2026"
+            },
+            buonjung: {
+                ten: "Buôn Jung",
+                soHo: "597 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "26,4 ha",
+                danSo: "khoảng 2.360 người",
+                truongThon: "Y Hương",
+                ngayCapNhat: "08/07/2026"
+            },
+            eavong: {
+                ten: "Buôn Ea Vông",
+                soHo: "741 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "32,1 ha",
+                danSo: "khoảng 2.950 người",
+                truongThon: "Y Khôi",
+                ngayCapNhat: "08/07/2026"
+            },
+            phuochoa: {
+                ten: "Thôn Phước Hoà",
+                soHo: "457 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "21,3 ha",
+                danSo: "khoảng 1.820 người",
+                truongThon: "Nguyễn Thị D",
+                ngayCapNhat: "08/07/2026"
+            },
+            ghamah: {
+                ten: "Buôn Gha Mah",
+                soHo: "651 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "29,8 ha",
+                danSo: "khoảng 2.620 người",
+                truongThon: "Y Liêm",
+                ngayCapNhat: "08/07/2026"
+            },
+            phuocan1: {
+                ten: "Phước An 1",
+                soHo: "974 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "42,7 ha",
+                danSo: "khoảng 3.900 người",
+                truongThon: "Nguyễn Trường An",
+                ngayCapNhat: "01/07/2026"
+            },
+            phuocan2: {
+                ten: "Phước An 2",
+                soHo: "990 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "44,2 ha",
+                danSo: "khoảng 3.960 người",
+                truongThon: "Trần Thị Hồng",
+                ngayCapNhat: "01/07/2026"
+            },
+            phuocan3: {
+                ten: "Phước An 3",
+                soHo: "843 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "37,5 ha",
+                danSo: "khoảng 3.370 người",
+                truongThon: "Phạm Văn E",
+                ngayCapNhat: "01/07/2026"
+            },
+            phuocan4: {
+                ten: "Phước An 4",
+                soHo: "1.107 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "49,1 ha",
+                danSo: "khoảng 4.430 người",
+                truongThon: "Hoàng Thị F",
+                ngayCapNhat: "01/07/2026"
+            },
+            phuocan5: {
+                ten: "Phước An 5",
+                soHo: "946 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "41,3 ha",
+                danSo: "khoảng 3.780 người",
+                truongThon: "Đinh Văn G",
+                ngayCapNhat: "01/07/2026"
+            },
+            phuocan6: {
+                ten: "Phước An 6",
+                soHo: "601 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "27,2 ha",
+                danSo: "khoảng 2.410 người",
+                truongThon: "Võ Thị H",
+                ngayCapNhat: "01/07/2026"
+            },
+            thangtien: {
+                ten: "Thôn Thắng Tiến",
+                soHo: "494 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "23,1 ha",
+                danSo: "khoảng 1.980 người",
+                truongThon: "Nguyễn Văn I",
+                ngayCapNhat: "08/07/2026"
+            },
+            thangtien1: {
+                ten: "Thôn Thắng Tiến 1",
+                soHo: "466 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "21,8 ha",
+                danSo: "khoảng 1.870 người",
+                truongThon: "Trần Văn K",
+                ngayCapNhat: "08/07/2026"
+            },
+            kmrong: {
+                ten: "Buôn Km Rồng",
+                soHo: "524 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "24,5 ha",
+                danSo: "khoảng 2.100 người",
+                truongThon: "Y Vinh",
+                ngayCapNhat: "08/07/2026"
+            },
+            hoatien1: {
+                ten: "Thôn Hoà Tiến 1",
+                soHo: "728 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "31,6 ha",
+                danSo: "khoảng 2.910 người",
+                truongThon: "Lý Thị L",
+                ngayCapNhat: "08/07/2026"
+            },
+            hoatien2: {
+                ten: "Thôn Hoà Tiến 2",
+                soHo: "603 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "27,4 ha",
+                danSo: "khoảng 2.420 người",
+                truongThon: "Nguyễn Văn M",
+                ngayCapNhat: "08/07/2026"
+            },
+            hoaan: {
+                ten: "Thôn Hoà An",
+                soHo: "639 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "29,1 ha",
+                danSo: "khoảng 2.560 người",
+                truongThon: "Trần Thị N",
+                ngayCapNhat: "08/07/2026"
+            },
+            hoatien3: {
+                ten: "Thôn Hoà Tiến 3",
+                soHo: "605 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "27,6 ha",
+                danSo: "khoảng 2.430 người",
+                truongThon: "Phan Văn O",
+                ngayCapNhat: "08/07/2026"
+            },
+            thanhthanh: {
+                ten: "Thành Thạnh",
+                soHo: "597 hộ",
+                thuocXa: "Xã Phước An",
+                dienTich: "27,3 ha",
+                danSo: "khoảng 2.390 người",
+                truongThon: "Nguyễn Thị P",
+                ngayCapNhat: "08/07/2026"
+            }
+        };
+
+        // Hàm hiển thị thông tin khi nhấn chọn
+        function showInfo(key) {
+            const info = data[key];
+            const content = `
+                <div class="info-row"><div class="info-label">Tên khu vực:</div><div>${info.ten}</div></div>
+                <div class="info-row"><div class="info-label">Số hộ gia đình:</div><div>${info.soHo}</div></div>
+                <div class="info-row"><div class="info-label">Thuộc đơn vị:</div><div>${info.thuocXa}</div></div>
+                <div class="info-row"><div class="info-label">Diện tích:</div><div>${info.dienTich}</div></div>
+                <div class="info-row"><div class="info-label">Dân số ước tính:</div><div>${info.danSo}</div></div>
+                <div class="info-row"><div class="info-label">Trưởng thôn/buôn:</div><div>${info.truongThon}</div></div>
+                <div class="info-row"><div class="info-label">Ngày cập nhật:</div><div>${info.ngayCapNhat}</div></div>
+            `;
+            document.getElementById("info-content").innerHTML = content;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản đồ tương tác các Thôn, Buôn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #f8f7f2; font-family: Arial, sans-serif; }
+        .map-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-size: 28px; font-weight: bold; color: #222; text-align: center; margin-bottom: 8px; }
+        .subtitle { text-align: center; color: #555; margin-bottom: 20px; }
+        .interactive-svg { width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px; background: #f8f7f2; }
+        .region { cursor: pointer; transition: all 0.2s ease; }
+        .region:hover { opacity: 0.85; filter: brightness(1.08); stroke-width: 2; }
+        .info-panel { background: white; border-radius: 8px; padding: 16px; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #2e7d32; }
+        .legend { background: white; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="map-container">
+        <h1>BẢN ĐỒ CHI TIẾT CÁC THÔN, BUÔN</h1>
+        <p class="subtitle">Hiển thị ranh giới và số liệu hộ gia đình • Nhấn vào từng vùng để xem thông tin</p>
+
+        <!-- Bản đồ SVG tương tác -->
+        <svg class="interactive-svg" viewBox="0 0 1722 960" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hướng Bắc -->
+            <text x="1660" y="40" font-size="24" font-weight="bold">N</text>
+            <path d="M 1670 20 L 1670 60 M 1655 35 L 1670 20 L 1685 35" stroke="#333" stroke-width="2" fill="none"/>
+
+            <!-- Thôn Tây Bắc -->
+            <path class="region" d="M 320 30 L 980 20 L 1120 120 L 1080 220 L 420 210 L 280 140 Z" fill="#cce7f5" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Tây Bắc', '465')"/>
+            <text x="680" y="110" font-size="26" font-weight="500" text-anchor="middle">Thôn Tây Bắc</text>
+            <text x="680" y="140" font-size="22" text-anchor="middle">465 hộ</text>
+
+            <!-- Buôn Pan -->
+            <path class="region" d="M 600 180 L 1060 170 L 1140 290 L 1040 370 L 560 360 Z" fill="#f9efb8" stroke="#333" stroke-width="1" onclick="showInfo('Buôn Pan', '364')"/>
+            <text x="840" y="250" font-size="26" font-weight="500" text-anchor="middle">Buôn Pan</text>
+            <text x="840" y="280" font-size="22" text-anchor="middle">364 hộ</text>
+
+            <!-- Thôn Tân Lập -->
+            <path class="region" d="M 460 260 L 660 250 L 720 380 L 620 460 L 440 440 Z" fill="#f8c8cb" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Tân Lập', '607')"/>
+            <text x="580" y="330" font-size="26" font-weight="500" text-anchor="middle">Thôn Tân Lập</text>
+            <text x="580" y="360" font-size="22" text-anchor="middle">607 hộ</text>
+
+            <!-- Thôn Tân Thành -->
+            <path class="region" d="M 360 420 L 560 400 L 600 540 L 480 620 L 340 590 Z" fill="#d4c8f0" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Tân Thành', '598')"/>
+            <text x="480" y="490" font-size="26" font-weight="500" text-anchor="middle">Thôn Tân Thành</text>
+            <text x="480" y="520" font-size="22" text-anchor="middle">598 hộ</text>
+
+            <!-- Buôn Jung -->
+            <path class="region" d="M 640 410 L 760 400 L 800 500 L 700 560 L 600 530 Z" fill="#f7d7b9" stroke="#333" stroke-width="1" onclick="showInfo('Buôn Jung', '597')"/>
+            <text x="710" y="460" font-size="26" font-weight="500" text-anchor="middle">Buôn Jung</text>
+            <text x="710" y="490" font-size="22" text-anchor="middle">597 hộ</text>
+
+            <!-- Buôn Ea Yông -->
+            <path class="region" d="M 660 530 L 840 510 L 900 640 L 780 700 L 620 650 Z" fill="#f8c59e" stroke="#333" stroke-width="1" onclick="showInfo('Buôn Ea Yông', '741')"/>
+            <text x="770" y="590" font-size="26" font-weight="500" text-anchor="middle">Buôn Ea Yông</text>
+            <text x="770" y="620" font-size="22" text-anchor="middle">741 hộ</text>
+
+            <!-- Thôn Phước Hoà -->
+            <path class="region" d="M 320 600 L 700 580 L 760 780 L 620 900 L 300 860 Z" fill="#c7e8c2" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Phước Hoà', '457')"/>
+            <text x="520" y="720" font-size="26" font-weight="500" text-anchor="middle">Thôn Phước Hoà</text>
+            <text x="520" y="750" font-size="22" text-anchor="middle">457 hộ</text>
+
+            <!-- Phước An 1 -->
+            <path class="region" d="M 740 360 L 880 350 L 920 420 L 840 470 L 720 450 Z" fill="#e6e2e0" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 1', '974')"/>
+            <text x="830" y="400" font-size="22" font-weight="500" text-anchor="middle">Phước An 1</text>
+            <text x="830" y="425" font-size="18" text-anchor="middle">974 hộ</text>
+
+            <!-- Phước An 2 -->
+            <path class="region" d="M 860 330 L 1040 320 L 1100 410 L 980 470 L 820 440 Z" fill="#d9c8ef" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 2', '990')"/>
+            <text x="960" y="380" font-size="24" font-weight="500" text-anchor="middle">Phước An 2</text>
+            <text x="960" y="410" font-size="20" text-anchor="middle">990 hộ</text>
+
+            <!-- Phước An 3 -->
+            <path class="region" d="M 820 460 L 920 450 L 940 510 L 880 540 L 800 520 Z" fill="#e8d8cb" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 3', '843')"/>
+            <text x="880" y="490" font-size="20" font-weight="500" text-anchor="middle">Phước An 3</text>
+            <text x="880" y="515" font-size="16" text-anchor="middle">843 hộ</text>
+
+            <!-- Phước An 4 -->
+            <path class="region" d="M 900 500 L 1020 490 L 1060 580 L 960 620 L 880 590 Z" fill="#cbe9f4" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 4', '1107')"/>
+            <text x="970" y="545" font-size="20" font-weight="500" text-anchor="middle">Phước An 4</text>
+            <text x="970" y="570" font-size="16" text-anchor="middle">1.107 hộ</text>
+
+            <!-- Phước An 5 -->
+            <path class="region" d="M 980 460 L 1120 450 L 1160 520 L 1060 560 L 960 530 Z" fill="#f2d4bc" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 5', '946')"/>
+            <text x="1060" y="495" font-size="20" font-weight="500" text-anchor="middle">Phước An 5</text>
+            <text x="1060" y="520" font-size="16" text-anchor="middle">946 hộ</text>
+
+            <!-- Phước An 6 -->
+            <path class="region" d="M 1040 540 L 1140 530 L 1180 590 L 1100 620 L 1020 600 Z" fill="#f9e0c7" stroke="#333" stroke-width="1" onclick="showInfo('Phước An 6', '601')"/>
+            <text x="1100" y="570" font-size="20" font-weight="500" text-anchor="middle">Phước An 6</text>
+            <text x="1100" y="595" font-size="16" text-anchor="middle">601 hộ</text>
+
+            <!-- Thôn Thăng Tiến -->
+            <path class="region" d="M 1020 280 L 1260 270 L 1320 360 L 1200 420 L 1000 390 Z" fill="#eec8a8" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Thăng Tiến', '494')"/>
+            <text x="1160" y="330" font-size="24" font-weight="500" text-anchor="middle">Thôn Thăng Tiến</text>
+            <text x="1160" y="360" font-size="20" text-anchor="middle">494 hộ</text>
+
+            <!-- Thôn Thăng Tiến 1 -->
+            <path class="region" d="M 1080 160 L 1280 150 L 1340 250 L 1220 300 L 1060 260 Z" fill="#c8e5bc" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Thăng Tiến 1', '466')"/>
+            <text x="1200" y="210" font-size="24" font-weight="500" text-anchor="middle">Thôn Thăng Tiến 1</text>
+            <text x="1200" y="240" font-size="20" text-anchor="middle">466 hộ</text>
+
+            <!-- Buôn Km Rộng -->
+            <path class="region" d="M 1240 380 L 1560 370 L 1620 450 L 1480 510 L 1220 470 Z" fill="#f0b996" stroke="#333" stroke-width="1" onclick="showInfo('Buôn Km Rộng', '524')"/>
+            <text x="1420" y="420" font-size="26" font-weight="500" text-anchor="middle">Buôn Km Rộng</text>
+            <text x="1420" y="450" font-size="22" text-anchor="middle">524 hộ</text>
+
+            <!-- Thôn Hoà An -->
+            <path class="region" d="M 1280 490 L 1540 480 L 1640 680 L 1460 740 L 1260 620 Z" fill="#bfe3d4" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Hoà An', '639')"/>
+            <text x="1420" y="580" font-size="26" font-weight="500" text-anchor="middle">Thôn Hoà An</text>
+            <text x="1420" y="610" font-size="22" text-anchor="middle">639 hộ</text>
+
+            <!-- Thôn Hoà Tiến 1 -->
+            <path class="region" d="M 1160 600 L 1340 590 L 1400 670 L 1280 710 L 1140 660 Z" fill="#c6e7d9" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Hoà Tiến 1', '728')"/>
+            <text x="1280" y="640" font-size="22" font-weight="500" text-anchor="middle">Thôn Hoà Tiến 1</text>
+            <text x="1280" y="665" font-size="18" text-anchor="middle">728 hộ</text>
+
+            <!-- Thôn Hoà Tiến 2 -->
+            <path class="region" d="M 1120 660 L 1280 650 L 1340 720 L 1220 760 L 1100 710 Z" fill="#cde9f5" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Hoà Tiến 2', '603')"/>
+            <text x="1220" y="695" font-size="22" font-weight="500" text-anchor="middle">Thôn Hoà Tiến 2</text>
+            <text x="1220" y="720" font-size="18" text-anchor="middle">603 hộ</text>
+
+            <!-- Thôn Hoà Tiến 3 -->
+            <path class="region" d="M 600 780 L 1300 720 L 1560 820 L 1380 940 L 540 920 Z" fill="#f8c8e0" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Hoà Tiến 3', '605')"/>
+            <text x="1040" y="840" font-size="28" font-weight="500" text-anchor="middle">Thôn Hoà Tiến 3</text>
+            <text x="1040" y="875" font-size="22" text-anchor="middle">605 hộ</text>
+
+            <!-- Thôn Thăng Thành -->
+            <path class="region" d="M 1080 580 L 1220 570 L 1260 630 L 1180 660 L 1060 630 Z" fill="#d8e8cb" stroke="#333" stroke-width="1" onclick="showInfo('Thôn Thăng Thành', '597')"/>
+            <text x="1160" y="605" font-size="20" font-weight="500" text-anchor="middle">Thôn Thăng Thành</text>
+            <text x="1160" y="630" font-size="16" text-anchor="middle">597 hộ</text>
+
+            <!-- Buôn Gha Mah -->
+            <path class="region" d="M 820 620 L 1160 600 L 1260 750 L 1080 840 L 780 780 Z" fill="#f9efb7" stroke="#333" stroke-width="1" onclick="showInfo('Buôn Gha Mah', '651')"/>
+            <text x="1020" y="710" font-size="26" font-weight="500" text-anchor="middle">Buôn Gha Mah</text>
+            <text x="1020" y="740" font-size="22" text-anchor="middle">651 hộ</text>
+
+            <!-- Tên các đơn vị lân cận -->
+            <text x="680" y="40" font-size="20" font-weight="500" text-anchor="middle">Phường Cư Bao</text>
+            <text x="1380" y="120" font-size="18" fill="#444">Xã Ea Phê</text>
+            <text x="1580" y="380" font-size="18" fill="#444">Xã Ea Knuêc</text>
+            <text x="240" y="260" font-size="18" fill="#444">Xã Ea Knuêc</text>
+            <text x="240" y="560" font-size="18" fill="#444">Xã Ea Knuêc</text>
+            <text x="360" y="930" font-size="18" fill="#444">Xã Ea Ning</text>
+            <text x="1360" y="900" font-size="18" fill="#444">Xã Tân Tiến</text>
+        </svg>
+
+        <!-- Khung hiển thị thông tin -->
+        <div id="infoBox" class="info-panel">
+            <h3 style="font-size: 20px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">Thông tin khu vực</h3>
+            <p style="color: #555;">Nhấn chuột vào một vùng trên bản đồ để xem chi tiết.</p>
+        </div>
+
+        <!-- Chú giải -->
+        <div class="legend">
+            <strong>Chú giải:</strong><br>
+            - Màu khác nhau = Tên Thôn / Buôn<br>
+            - Số liệu bên dưới = Số lượng hộ gia đình
+        </div>
+    </div>
+
+    <script>
+        function showInfo(name, households) {
+            const infoBox = document.getElementById('infoBox');
+            infoBox.innerHTML = `
+                <h3 style="font-size: 22px; font-weight: bold; color: #2e7d32; margin-bottom: 12px;">${name}</h3>
+                <p style="font-size: 18px; margin: 6px 0;"><strong>Số hộ gia đình:</strong> ${households} hộ</p>
+                <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                <p style="font-size: 15px; color: #555;">Giáp ranh với: Phường Cư Bao, Xã Ea Phê, Xã Ea Knuêc, Xã Ea Ning, Xã Tân Tiến</p>
+            `;
+        }
+    </script>
+</body>
+</html>
