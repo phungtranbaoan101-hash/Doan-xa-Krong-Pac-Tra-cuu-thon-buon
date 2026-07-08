@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Thôn - Buôn Xã Krông Pắc</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .logo {
+            height: 85px;
+            width: auto;
+            display: block;
+        }
+        h1 {
+            color: #166534;
+            font-weight: bold;
+            font-size: 24px;
+            margin: 0;
+            text-align: center;
+        }
+        /* === Khối Bản đồ === */
+        .map-container {
+            max-width: 1000px;
+            margin: 0 auto 35px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .map-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #0F4896;
+            margin-bottom: 15px;
+        }
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        /* ==================== */
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 950px;
+            margin: 0 auto 25px;
+        }
+        .area-box {
+            padding: 16px 8px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .area-box:hover {
+            transform: scale(1.03);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+            border-color: #165DFF;
+        }
+        .info-panel {
+            max-width: 950px;
+            margin: 0 auto 25px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .info-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0F4896;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row {
+            display: flex;
+            padding: 7px 0;
+            border-bottom: 1px dashed #eee;
+            flex-wrap: wrap;
+        }
+        .info-label {
+            width: 190px;
+            font-weight: 500;
+            color: #475569;
+            flex-shrink: 0;
+        }
+        .info-value {
+            flex: 1;
+            color: #1e293b;
+        }
+        .note-block {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f8fafc;
+            border-left: 3px solid #f59e0b;
+            border-radius: 4px;
+        }
+        .office {
+            max-width: 950px;
+            margin: 0 auto 30px;
+            padding: 15px 20px;
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+        .office p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .office a {
+            color: #047857;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .office a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 12px;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+        .bg-sky-100 { background: #e0f2fe; }
+        .bg-purple-100 { background: #f3e8ff; }
+        .bg-rose-100 { background: #ffe4e6; }
+        .bg-green-100 { background: #dcfce7; }
+        .bg-orange-100 { background: #fed7aa; }
+        .bg-amber-100 { background: #fef3c7; }
+        .bg-gray-100 { background: #f3f4f6; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <img src="logo-doan-thanh-nien.png" alt="Logo Đoàn Thanh Niên Hồ Chí Minh" class="logo">
+        <h1>TRA CỨU THÔN - BUÔN XÃ KRÔNG PẮC</h1>
+    </div>
+
+    <!-- === Khối Bản đồ Xã === -->
+    <div class="map-container">
+        <h2 class="map-title">BẢN ĐỒ CHI TIẾT CÁC THÔN - BUÔN XÃ KRÔNG PẮC</h2>
+        <img src="ban-do-thon-buon.png" alt="Bản đồ các thôn, buôn trên địa bàn xã Krông Pắc" class="map-image">
+    </div>
+    <!-- ======================= -->
+
+    <div class="map-grid">
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan1')">Phước An 1</div>
+        <div class="area-box bg-purple-100" onclick="showInfo('phuocan2')">Phước An 2</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan3')">Phước An 3</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan4')">Phước An 4</div>
+        <div class="area-box bg-purple-100" onclick="showInfo('phuocan5')">Phước An 5</div>
+
+        <div class="area-box bg-sky-100" onclick="showInfo('phuocan6')">Phước An 6</div>
+        <div class="area-box bg-rose-100" onclick="showInfo('tanthanh')">Thôn Tân Thành</div>
+        <div class="area-box bg-green-100" onclick="showInfo('phuochoa')">Thôn Phước Hòa</div>
+        <div class="area-box bg-orange-100" onclick="showInfo('buonjung')">Buôn Jung</div>
+        <div class="area-box bg-orange-100" onclick="showInfo('buoneayong')">Buôn Ea Yông</div>
+
+        <div class="area-box bg-amber-100" onclick="showInfo('thangtien')">Thôn Thăng Tiến</div>
+        <div class="area-box bg-gray-100" onclick="showInfo('taybac')">Thôn Tây Bắc</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('buonpan')">Buôn Pan</div>
+        <div class="area-box bg-rose-100" onclick="showInfo('tanlap')">Thôn Tân Lập</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('ghamah')">Buôn Ea Wi</div>
+
+        <div class="area-box bg-green-100" onclick="showInfo('thangtien1')">Thôn Thăng Tiến 1</div>
+        <div class="area-box bg-green-100" onclick="showInfo('kmrong')">Buôn Kmrơng</div>
+        <div class="area-box bg-amber-100" onclick="showInfo('hoatien1')">Thôn Hòa Tiến 1</div>
+        <div class="area-box bg-sky-100" onclick="showInfo('hoatien2')">Thôn Hòa Tiến 2</div>
+        <div class="area-box bg-green-100" onclick="showInfo('hoaan')">Thôn Hòa An</div>
+
+        <div class="area-box bg-rose-100" onclick="showInfo('hoatien3')">Thôn Hòa Tiến 3</div>
+        <div class="area-box bg-gray-100" onclick="showInfo('thanhthanh')">Thôn Thăng Thạnh</div>
+    </div>
+
+    <div class="info-panel">
+        <div class="info-header">Thông tin chi tiết</div>
+        <div id="info-content">👉 Nhấn vào tên Thôn/Buôn để xem thông tin đầy đủ</div>
+    </div>
+
+   <!-- Thông tin trụ sở + định vị -->
+    <div class="office">
+        <p>📍 Trụ sở Đảng ủy xã - <a href="https://www.google.com/maps/place/Huy%E1%BB%87n+%E1%BB%A7y+Kr%C3%B4ng+P%E1%BA%AFk/@12.7129421,108.302049,115m/data=!3m1!1e3!4m6!3m5!1s0x3171e58e911d9fa7:0xc6b5a0f953c2d28f!8m2!3d12.7127668!4d108.3017904!16s%2Fg%2F11g_4xk1j?entry=ttu&g_ep=EgoyMDI2MDcwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Xem định vị</a></p>
+        <p>🏢 Trụ sở HĐND - UBND xã - <a href="https://www.google.com/maps/place/UBND+X%C3%A3+Kr%C3%B4ng+P%E1%BA%AFk/@12.7111544,108.3006448,230m/data=!3m1!1e3!4m6!3m5!1s0x3171e589330f4c3b:0x20a6e2ac9f56e0dc!8m2!3d12.7108935!4d108.3010125!16s%2Fg%2F11gzgywq9?entry=ttu&g_ep=EgoyMDI2MDcwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Xem định vị</a></p>
+        <p>🤝 Trụ sở Mặt trận Tổ quốc - <a href="https://www.google.com/maps/place/Ban+D%C3%A2n+T%E1%BB%99c+-+M%E1%BA%B7t+Tr%E1%BA%ADn+%26+C%C3%A1c+%C4%90o%C3%A0n+Th%E1%BB%83/@12.7106798,108.2995403,921m/data=!3m1!1e3!4m6!3m5!1s0x3171e58ebd81c7b9:0x1b9cca4ec07d03b6!8m2!3d12.7123325!4d108.3020693!16s%2Fg%2F11h06v774?entry=ttu&g_ep=EgoyMDI2MDcwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Xem định vị</a></p>
+        <p>👮 Trụ sở Công an xã - <a href="https://www.google.com/maps/place/C%C3%B4ng+An+Huy%E1%BB%87n+Kr%C3%B4ng+P%E1%BA%AFk/@12.7104901,108.3034993,230m/data=!3m1!1e3!4m6!3m5!1s0x3171e58bf4805f23:0x45e35f09d9421325!8m2!3d12.7103385!4d108.3044216!16s%2Fg%2F11l668fysj?entry=ttu&g_ep=EgoyMDI2MDcwNS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Xem định vị</a></p>
+    </div>
+
+    <footer>© 2026 Xã Krông Pắc. Tất cả các quyền được bảo lưu.</footer>
+
+    <script>
+        const data = {
+            phuocan1: {
+                tenMoi: "Phước An 1",
+                sapNhapTu: "Thôn Phước An 1, Thôn Phước An 2",
+                chiTietCu: "• Thôn Phước An 1: 395 hộ - 1.646 người - 71,9 ha<br>• Thôn Phước An 2: 579 hộ - 2.563 người - 113 ha",
+                dienTich: "184,9 ha",
+                danSo: "2.290 người",
+                soHo: "974 hộ",
+                biThu: "Trần Văn Tổng",
+                thonTruong: "Nguyễn Trường Kha",
+                ctmt: "Phan Thị Thúy Hằng",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuocan2: {
+                tenMoi: "Thôn Phước An 2",
+                sapNhapTu: "Thôn Phước An 3, Thôn Phước An 4, Thôn Phước An 5",
+                chiTietCu: "• Thôn Phước An 3: 269 hộ - 1.692 người - 41,9 ha<br>• Thôn Phước An 4: 277 hộ - 1.224 người - 24,2 ha",
+                dienTich: "111,6 ha",
+                danSo: "2.445 người",
+                soHo: "843 hộ",
+                biThu: "Hoàng Thị Hoa",
+                thonTruong: "Phan Văn Thắng",
+                ctmt: "Nguyễn Thị Lành",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuocan3: {
+                tenMoi: "Thôn Phước An 3",
+                sapNhapTu: "Thôn Phước An 6, Thôn Phước An 9",
+                chiTietCu: "• Thôn Phước An 6: 657 hộ - 1.946 người - 30,3 ha<br>• Thôn Phước An 9: 333 hộ - 1.578 người - 339,2 ha",
+                dienTich: "369,5 ha",
+                danSo: "3.524 người",
+                soHo: "990 hộ",
+                biThu: "Phan Văn Dũng",
+                thonTruong: "Phùng Hoàng Anh",
+                ctmt: "Nguyễn Thiện Giáp",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuocan4: {
+                tenMoi: "Thôn Phước An 4",
+                sapNhapTu: "Thôn Phước An 7, Thôn Phước An 8",
+                chiTietCu: "• Thôn Phước An 7: 508 hộ - 2.379 người - 123 ha<br>• Thôn Phước An 8: 599 hộ - 2.666 người - 40 ha",
+                dienTich: "163 ha",
+                danSo: "5.045 người",
+                soHo: "1.107 hộ",
+                biThu: "Nguyễn Cửu Hùng",
+                thonTruong: "Bùi Thanh Bình",
+                ctmt: "Vũ Tuấn Phước",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuocan5: {
+                tenMoi: "Thôn Phước An 5",
+                sapNhapTu: "Thôn Phước An 11, Thôn Phước An 14",
+                chiTietCu: "• Thôn Phước An 11: 347 hộ - 1.700 người - 26,2 ha<br>• Thôn Phước An 14: 599 hộ - 1.929 người - 76,92 ha",
+                dienTich: "103,1 ha",
+                danSo: "3.629 người",
+                soHo: "946 hộ",
+                biThu: "Hoàng Thị Thanh Thúy",
+                thonTruong: "Nguyễn Thanh Phước",
+                ctmt: "Trần Thị Loan",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuocan6: {
+                tenMoi: "Thôn Phước An 6",
+                sapNhapTu: "Thôn Phước An 12, Thôn Phước An 16",
+                chiTietCu: "• Thôn Phước An 12: 297 hộ - 1.478 người - 30,5 ha<br>• Thôn Phước An 16: 599 hộ - 3.053 người - 59,9 ha",
+                dienTich: "90,4 ha",
+                danSo: "3.053 người",
+                soHo: "601 hộ",
+                biThu: "Hoàng Thị Thu Hương",
+                thonTruong: "Lê Văn Hậu",
+                ctmt: "Trần Thị Phượng",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            tanthanh: {
+                tenMoi: "Thôn Tân Thành",
+                sapNhapTu: "Thôn Tân Thành 1, Thôn 19/8, Thôn Phước Thành",
+                chiTietCu: "• Thôn Tân Thành 1: 224 hộ - 922 người - 103,7 ha<br>• Thôn 19/8: 192 hộ - 819 người - 204 ha<br>• Thôn Phước Thành: 182 hộ - 878 người - 217 ha",
+                dienTich: "524,7 ha",
+                danSo: "2.619 người",
+                soHo: "598 hộ",
+                biThu: "Phạm Ngọc Tuấn",
+                thonTruong: "Nguyễn Bảo Chung",
+                ctmt: "Ngô Quang Giáp",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            phuochoa: {
+                tenMoi: "Thôn Phước Hòa",
+                sapNhapTu: "Thôn Phước Hòa, Thôn Tân Sơn, Thôn Thạch Lũ",
+                chiTietCu: "• Thôn Phước Hòa: 269 hộ - 1.260 người - 801,4 ha<br>• Thôn Tân Sơn: 84 hộ - 468 người - 375,4 ha<br>• Thôn Thạch Lũ: 104 hộ - 558 người - 392,5 ha",
+                dienTich: "1.569,3 ha",
+                danSo: "2.286 người",
+                soHo: "457 hộ",
+                biThu: "Hứa Văn Dũng",
+                thonTruong: "Nguyễn Anh Tuấn",
+                ctmt: "Bế Thị Thu Hường",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            buonjung: {
+                tenMoi: "Buôn Jung",
+                sapNhapTu: "Buôn Jung, Buôn Jung 2",
+                chiTietCu: "• Buôn Jung: 346 hộ - 1.921 người - 182,2 ha<br>• Buôn Jung 2: 251 hộ - 1.221 người - 95,8 ha",
+                dienTich: "278 ha",
+                danSo: "3.142 người",
+                soHo: "597 hộ",
+                biThu: "Bùi Đình Thành",
+                thonTruong: "Y Bler Ayun",
+                ctmt: "Y Quyên Niê",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            buoneayong: {
+                tenMoi: "Buôn Ea Yông",
+                sapNhapTu: "Buôn Ea Yông A2, Thôn Tân Tiến 1, Buôn Ea Yông A",
+                chiTietCu: "• Buôn Ea Yông A2: 223 hộ - 1.011 người - 49 ha<br>• Thôn Tân Tiến 1: 188 hộ - 855 người - 241,6 ha<br>• Buôn Ea Yông A: 330 hộ - 1.635 người - 100,4 ha",
+                dienTich: "391 ha",
+                danSo: "3.501 người",
+                soHo: "741 hộ",
+                biThu: "Nguyễn Đình Đông",
+                thonTruong: "Nguyễn Đình Cường",
+                ctmt: "Y Bu Bă Niê",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            thangtien: {
+                tenMoi: "Thôn Thăng Tiến",
+                sapNhapTu: "Thôn Thăng Tiến 2, Thôn 6A, Thôn 6B",
+                chiTietCu: "• Thôn Thăng Tiến 2: 152 hộ - 777 người - 234,5 ha<br>• Thôn 6A: 166 hộ - 761 người - 53,8 ha<br>• Thôn 6B: 176 hộ - 951 người - 65,9 ha",
+                dienTich: "354,2 ha",
+                danSo: "2.489 người",
+                soHo: "494 hộ",
+                biThu: "Nguyễn Đức Nhâm",
+                thonTruong: "Cao Thanh Hùng",
+                ctmt: "Phạm Xuân Quang",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            taybac: {
+                tenMoi: "Thôn Tây Bắc",
+                sapNhapTu: "Thôn Lạng Sơn, Thôn Cao Bằng, Thôn 8",
+                chiTietCu: "• Thôn Lạng Sơn: 169 hộ - 785 người - 608,1 ha<br>• Thôn Cao Bằng: 203 hộ - 1.050 người - 256,5 ha<br>• Thôn 8: 93 hộ - 468 người - 599,9 ha",
+                dienTich: "1.464,5 ha",
+                danSo: "2.303 người",
+                soHo: "465 hộ",
+                biThu: "Tô Minh Hùng",
+                thonTruong: "Nông Văn Nguyên",
+                ctmt: "Đinh Văn Nâng",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            buonpan: {
+                tenMoi: "Buôn Pan",
+                sapNhapTu: "Buôn Pan, Buôn Pan B",
+                chiTietCu: "• Buôn Pan: 230 hộ - 1.135 người - 565,2 ha<br>• Buôn Pan B: 235 hộ - 1.168 người - 899,3 ha",
+                dienTich: "1.464,5 ha",
+                danSo: "2.303 người",
+                soHo: "465 hộ",
+                biThu: "H Triệu Niê",
+                thonTruong: "Y Sanh Niê",
+                ctmt: "H Nghìn Ayun",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            tanlap: {
+                tenMoi: "Thôn Tân Lập",
+                sapNhapTu: "Thôn Tân Lập 1, Thôn 19/5",
+                chiTietCu: "• Thôn Tân Lập 1: 396 hộ - 1.602 người - 174,6 ha<br>• Thôn 19/5: 211 hộ - 1.069 người - 421,1 ha",
+                dienTich: "595,7 ha",
+                danSo: "2.671 người",
+                soHo: "607 hộ",
+                biThu: "Trần Tú Anh",
+                thonTruong: "Lê Đức Nhật",
+                ctmt: "Hồ Quang Tùng",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            ghamah: {
+                tenMoi: "Buôn Ea Wi",
+                sapNhapTu: "Buôn Gha Mah, Buôn Ea Yông B, Thôn Ea Wi",
+                chiTietCu: "• Buôn Gha Mah: 203 hộ - 955 người - 120,6 ha<br>• Buôn Ea Yông B: 336 hộ - 1.949 người - 642,1 ha<br>• Thôn Ea Wi: 112 hộ - 539 người - 182,7 ha",
+                dienTich: "945,4 ha",
+                danSo: "3.443 người",
+                soHo: "651 hộ",
+                biThu: "Hoàng Anh Tuấn",
+                thonTruong: "Y Lợi Ayun",
+                ctmt: "H Chim Niê",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            thangtien1: {
+                tenMoi: "Thôn Thăng Tiến 1",
+                sapNhapTu: "Thôn Thăng Tiến 1, Thăng Tiến 2, Thôn 7",
+                chiTietCu: "• Thôn Thăng Tiến 1: 173 hộ - 845 người - 44,6 ha<br>• Thăng Tiến 2: 127 hộ - 668 người - 258,6 ha<br>• Thôn 7: 166 hộ - 898 người - 192,7 ha",
+                dienTich: "495,9 ha",
+                danSo: "2.411 người",
+                soHo: "466 hộ",
+                biThu: "Trần Văn Sơn",
+                thonTruong: "Nguyễn Duy Vũ",
+                ctmt: "Phạm Đức Phúc",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            kmrong: {
+                tenMoi: "Buôn Kmrơng",
+                sapNhapTu: "Buôn Kmrơng, Thôn 1C, Thôn 1E, Thôn 1D",
+                chiTietCu: "• Buôn Kmrơng: 110 hộ - 619 người - 102,4 ha<br>• Thôn 1C: 113 hộ - 530 người - 41 ha<br>• Thôn 1E: 114 hộ - 602 người - 66,5 ha<br>• Thôn 1D: 187 hộ - 993 người - 137,5 ha",
+                dienTich: "374,4 ha",
+                danSo: "2.744 người",
+                soHo: "524 hộ",
+                biThu: "Lương Thanh Phương",
+                thonTruong: "Nguyễn Đình Khương",
+                ctmt: "Nguyễn Thị Mỹ Ngọc",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            hoatien1: {
+                tenMoi: "Thôn Hòa Tiến 1",
+                sapNhapTu: "Thôn 1A, Thôn 1B",
+                chiTietCu: "• Thôn 1A: 296 hộ - 1.348 người - 91,4 ha<br>• Thôn 1B: 432 hộ - 1.936 người - 87,6 ha",
+                dienTich: "179 ha",
+                danSo: "3.284 người",
+                soHo: "728 hộ",
+                biThu: "Nguyễn Văn Thiên",
+                thonTruong: "Trương Việt Toàn",
+                ctmt: "Đỗ Thị Ly",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            hoatien2: {
+                tenMoi: "Thôn Hòa Tiến 2",
+                sapNhapTu: "Thôn 2A, Thôn 2B",
+                chiTietCu: "• Thôn 2A: 345 hộ - 1.701 người - 88,1 ha<br>• Thôn 2B: 258 hộ - 1.246 người - 49,8 ha",
+                dienTich: "138 ha",
+                danSo: "2.947 người",
+                soHo: "603 hộ",
+                biThu: "Lê Văn Minh",
+                thonTruong: "Đặng Thị Bích Trâm",
+                ctmt: "Nguyễn Thị Hạnh",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            hoaan: {
+                tenMoi: "Thôn Hòa An",
+                sapNhapTu: "Thôn Tân Thành 2, Thôn Tân Tiến 2, Thôn Tân Lập 2, Thôn Tân Lập A",
+                chiTietCu: "• Thôn Tân Thành 2: 188 hộ - 1.007 người - 427,4 ha<br>• Thôn Tân Tiến 2: 182 hộ - 902 người - 32,5 ha<br>• Thôn Tân Lập 2: 100 hộ - 525 người - 29,1 ha<br>• Thôn Tân Lập A: 169 hộ - 993 người - 65,9 ha",
+                dienTich: "554,9 ha",
+                danSo: "3.356 người",
+                soHo: "639 hộ",
+                biThu: "Nguyễn Đình Nam",
+                thonTruong: "Trần Quốc Hùng",
+                ctmt: "Nguyễn Đình Nam",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            hoatien3: {
+                tenMoi: "Thôn Hòa Tiến 3",
+                sapNhapTu: "Thôn 3A, Thôn 4A, Thôn 4B",
+                chiTietCu: "• Thôn 3A: 324 hộ - 1.547 người - 311,8 ha<br>• Thôn 4A: 135 hộ - 790 người - 112 ha<br>• Thôn 4B: 146 hộ - 850 người - 198,7 ha",
+                dienTich: "623 ha",
+                danSo: "3.187 người",
+                soHo: "605 hộ",
+                biThu: "Nguyễn Thu Sa",
+                thonTruong: "Kiều Quang Huy",
+                ctmt: "Nguyễn Thu Sa",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            },
+            thanhthanh: {
+                tenMoi: "Thôn Thăng Thạnh",
+                sapNhapTu: "Thôn 2, Thôn 3B, Thôn 4",
+                chiTietCu: "• Thôn 2: 242 hộ - 1.178 người - 37,8 ha<br>• Thôn 3B: 149 hộ - 792 người - 45,3 ha<br>• Thôn 4: 206 hộ - 1.021 người - 43,1 ha",
+                dienTich: "126 ha",
+                danSo: "2.991 người",
+                soHo: "597 hộ",
+                biThu: "Nguyễn Văn Cả",
+                thonTruong: "Phan Quốc Thắng",
+                ctmt: "Nguyễn Phương Tiến",
+                ngayCapNhat: "01/07/2026",
+                ghiChu: "Đã cập nhật theo danh sách sắp xếp thôn/buôn."
+            }
+        };
+
+        function showInfo(key) {
+            const info = data[key];
+            document.getElementById("info-content").innerHTML = `
+                <div class="info-row"><div class="info-label">Tên mới:</div><div class="info-value"><strong>${info.tenMoi}</strong></div></div>
+                <div class="info-row"><div class="info-label">Sáp nhập từ:</div><div class="info-value">${info.sapNhapTu}</div></div>
+                <div class="info-row"><div class="info-label">Chi tiết thôn/buôn cũ:</div><div class="info-value">${info.chiTietCu}</div></div>
+                <div class="info-row"><div class="info-label">Diện tích:</div><div class="info-value">${info.dienTich}</div></div>
+                <div class="info-row"><div class="info-label">Dân số:</div><div class="info-value">${info.danSo}</div></div>
+                <div class="info-row"><div class="info-label">Số hộ:</div><div class="info-value">${info.soHo}</div></div>
+                <div class="info-row"><div class="info-label">Bí thư chi bộ:</div><div class="info-value">${info.biThu}</div></div>
+                <div class="info-row"><div class="info-label">Thôn trưởng:</div><div class="info-value">${info.thonTruong}</div></div>
+                <div class="info-row"><div class="info-label">Trưởng ban CTMT:</div><div class="info-value">${info.ctmt}</div></div>
+                <div class="info-row"><div class="info-label">Ngày cập nhật:</div><div class="info-value">${info.ngayCapNhat}</div></div>
+                <div class="note-block"><strong>Ghi chú:</strong> ${info.ghiChu}</div>
+            `;
+        }
+    </script>
+</body>
+</html>
